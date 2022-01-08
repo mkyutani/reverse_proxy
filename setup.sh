@@ -3,14 +3,16 @@
 # Generate nginx.conf
 cp -f nginx.conf env
 
-# Generate default.con
-cp -f default.conf env
-
 # Generate rp.conf
 echo -n > env/rp.conf
-for s in `grep -v ^# env/servers.csv`
+for s in `grep -v ^# env/servers.csv | sed -r '/^[^,]+,\/,/!d'`
 do
 	eval `echo $s | sed -r 's/^([^,]+),([^,]+),([^,]+),([^,]+)(.*)/SERVER=\1 LOCATION=\2 CONTAINER=\3 CONTAINER_PORT=\4 envsubst \\\\\\\"\\\\\\\$SERVER \\\\\\\$LOCATION \\\\\\\$CONTAINER \\\\\\\$CONTAINER_PORT\\\\\\\" < \.\/rp\.conf\.template >>env\/rp\.conf/'`
+done
+
+for s in `grep -v ^# env/servers.csv | sed -r '/^[^,]+,\/,/d'`
+do
+	eval `echo $s | sed -r 's/^([^,]+),([^,]+),([^,]+),([^,]+)(.*)/SERVER=\1 LOCATION=\2 CONTAINER=\3 CONTAINER_PORT=\4 envsubst \\\\\\\"\\\\\\\$SERVER \\\\\\\$LOCATION \\\\\\\$CONTAINER \\\\\\\$CONTAINER_PORT\\\\\\\" < \.\/rp-noroot\.conf\.template >>env\/rp\.conf/'`
 done
 
 # Generate docker-compose.yml
