@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-# Generate nginx.conf
-cp -f nginx.conf env
+# Generate overwritten configuration files
+cp -f nginx.conf.template env/nginx.conf
+cp -f default.conf.template env/default.conf
 
 # Generate rp.conf
 echo -n > env/rp.conf
