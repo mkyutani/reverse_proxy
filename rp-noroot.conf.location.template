@@ -1,7 +1,3 @@
-server {
-    listen 80;
-    server_name ${SERVER};
-
     location ${LOCATION} {
         proxy_set_header  Host                $host;
         proxy_set_header  X-Real-IP           $remote_addr;
@@ -11,5 +7,4 @@ server {
         proxy_pass        http://${CONTAINER}:${CONTAINER_PORT}/;
         proxy_redirect    default;
     }
-}
 
