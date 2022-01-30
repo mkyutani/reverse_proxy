@@ -1,7 +1,7 @@
 server {
     listen 80;
     server_name ${SERVER};
-    return 301 https://$host$request_url;
+    return 301 https://$host$request_uri;
 }
 
 server {
