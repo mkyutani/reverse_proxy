@@ -1,0 +1,11 @@
+server {
+    listen 80;
+    server_name ${SERVER};
+    return 301 https://$host$request_url;
+}
+
+server {
+    listen 443 ssl;
+    server_name ${SERVER};
+    ssl_certificate /etc/letsencrypt/live/blackaplysia.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/blackaplysia.com/privkey.pem;
