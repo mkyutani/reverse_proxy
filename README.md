@@ -55,6 +55,18 @@ The purpose of this repository is building reverse proxy communicating internal 
 ~/reverse_proxy/env/reverse_proxy$ curl http://root.mydomain.com/hoge/
 ```
 
+# SSL with letsencrypt
+
+1. Generate certificate by letsencrypt
+
+```
+$ sudo ls /etc/letsencrypt/live/[mydomain.com]
+README  cert.pem  chain.pem  fullchain.pem  privkey.pem
+```
+
+2. Use setup.ssl.sh instead of setup.sh.
+
+
 # Sample input/output
 
 ## env/reverse_proxy/servers.csv (input)
