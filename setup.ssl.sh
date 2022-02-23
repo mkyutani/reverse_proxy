@@ -17,14 +17,62 @@ do
         SERVER=$s envsubst "\$SERVER" < ./rp-noroot.conf.header.ssl.template >> env/reverse_proxy/rp.$s.conf.tmp
         for l in `cat env/reverse_proxy/servers.$s.csv.tmp`
         do
-	    eval `echo $l | sed -r 's/^([^,]+),([^,]+),([^,]+),([^,]+)(.*)/SERVER=\1 LOCATION=\2 CONTAINER=\3 CONTAINER_PORT=\4 envsubst \\\\\\\"\\\\\\\$SERVER \\\\\\\$LOCATION \\\\\\\$CONTAINER \\\\\\\$CONTAINER_PORT\\\\\\\" < \.\/rp-noroot\.conf\.location\.template >> env\/reverse_proxy\/rp\.\1.conf.tmp/'`
+            SERVER=`echo $l | cut -d, -f1`
+            LOCATION=`echo $l | cut -d, -f2`
+            CONTAINER=`echo $l | cut -d, -f3`
+            CONTAINER_PORT=`echo $l | cut -d, -f4`
+            METHODS=`echo $l | cut -d, -f6`
+            AUTH_MSG=`echo $l | cut -d, -f7`
+
+            cat < /dev/null > env/reverse_proxy/rp.location.cond.tmp
+            if [ -n "$METHODS" ]
+            then
+                METHODS=${METHODS} \
+                       envsubst "\$METHODS" < ./rp-common.conf.location.methods.template >> env/reverse_proxy/rp.location.cond.tmp
+            fi
+            if [ -n "$AUTH_MSG" ]
+            then
+                AUTH_MSG=${AUTH_MSG} \
+                        envsubst "\$AUTH_MSG" < ./rp-common.conf.location.auth.template >> env/reverse_proxy/rp.location.cond.tmp
+            fi
+            cat ./rp-noroot.conf.location.template | sed '/-*-CONDITIONS-*-/e cat env/reverse_proxy/rp.location.cond.tmp' | sed '/-*-CONDITIONS-*-/d' >> env/reverse_proxy/rp.$s.conf.location.tmp
+
+            SERVER=${SERVER} \
+                  LOCATION=${LOCATION} \
+                  CONTAINER=${CONTAINER} \
+                  CONTAINER_PORT=${CONTAINER_PORT} \
+                  envsubst "\$SERVER \$LOCATION \$CONTAINER \$CONTAINER_PORT" < env/reverse_proxy/rp.$s.conf.location.tmp >> env/reverse_proxy/rp.$s.conf.tmp
         done
         SERVER=$s envsubst "\$SERVER" < ./rp-noroot.conf.trailer.template >> env/reverse_proxy/rp.$s.conf.tmp
     else
         echo -n > env/reverse_proxy/rp.$s.conf.tmp
         for l in `cat env/reverse_proxy/servers.$s.csv.tmp`
         do
-            eval `echo $l | sed -r 's/^([^,]+),([^,]+),([^,]+),([^,]+)(.*)/SERVER=\1 LOCATION=\2 CONTAINER=\3 CONTAINER_PORT=\4 envsubst \\\\\\\"\\\\\\\$SERVER \\\\\\\$LOCATION \\\\\\\$CONTAINER \\\\\\\$CONTAINER_PORT\\\\\\\" < \.\/rp\.conf\.ssl\.template >> env\/reverse_proxy\/rp\.\1.conf.tmp/'`
+            SERVER=`echo $l | cut -d, -f1`
+            LOCATION=`echo $l | cut -d, -f2`
+            CONTAINER=`echo $l | cut -d, -f3`
+            CONTAINER_PORT=`echo $l | cut -d, -f4`
+            METHODS=`echo $l | cut -d, -f6`
+            AUTH_MSG=`echo $l | cut -d, -f7`
+
+            cat < /dev/null > env/reverse_proxy/rp.location.cond.tmp
+            if [ -n "$METHODS" ]
+            then
+                METHODS=${METHODS} \
+                       envsubst "\$METHODS" < ./rp-common.conf.location.methods.template >> env/reverse_proxy/rp.location.cond.tmp
+            fi
+            if [ -n "$AUTH_MSG" ]
+            then
+                AUTH_MSG=${AUTH_MSG} \
+                        envsubst "\$AUTH_MSG" < ./rp-common.conf.location.auth.template >> env/reverse_proxy/rp.location.cond.tmp
+            fi
+            cat ./rp.conf.ssl.template | sed '/-*-CONDITIONS-*-/e cat env/reverse_proxy/rp.location.cond.tmp' | sed '/-*-CONDITIONS-*-/d' >> env/reverse_proxy/rp.$s.conf.ssl.tmp
+
+            SERVER=${SERVER} \
+                  LOCATION=${LOCATION} \
+                  CONTAINER=${CONTAINER} \
+                  CONTAINER_PORT=${CONTAINER_PORT} \
+                  envsubst "\$SERVER \$LOCATION \$CONTAINER \$CONTAINER_PORT" < env/reverse_proxy/rp.$s.conf.ssl.tmp >> env/reverse_proxy/rp.$s.conf.tmp
         done
     fi
 done

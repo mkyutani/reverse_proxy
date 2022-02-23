@@ -1,0 +1,3 @@
+        if ($request_method !~ ^(${METHODS})$ ) {
+            return 405;
+        }

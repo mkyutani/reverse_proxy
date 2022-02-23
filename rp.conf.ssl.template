@@ -11,6 +11,7 @@ server {
     ssl_certificate_key /etc/letsencrypt/live/blackaplysia.com/privkey.pem;
 
     location ${LOCATION} {
+        # -*-CONDITIONS-*-
         proxy_set_header  Host                $host;
         proxy_set_header  X-Real-IP           $remote_addr;
         proxy_set_header  X-Forwarded-Host    $host;
