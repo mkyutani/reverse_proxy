@@ -26,13 +26,20 @@ The purpose of this repository is building reverse proxy communicating internal 
 ~/reverse_proxy$ vi env/servers.csv
 ```
 
-4. Setup docker-compose.yml and conf files for nginx.
+4. Generate docker-compose.yml and conf files for nginx.
 
-```
-~/reverse_proxy$ ./setup.sh
-```
+    1. If SSL is not necessary, use setup.sh.
+    ```
+    ~/reverse_proxy$ ./setup.sh
+    ```
 
-- You will find some files after setup 4.
+    2. If SSL is necessary, use setup.ssl.sh.  In this case, you must also set up letsencrypt in /etc/letsencrypt on host.
+
+    ```
+    ~/reverse_proxy$ ./setup.ssl.sh
+    ```
+
+- You will find some files after executing setup.sh.
 
     - env/reverse_proxy/default.conf ... 0 byte file prepared to overwrite the original file.
     - env/reverse_proxy/docker-compose.yml ... docker-compose.yml
