@@ -9,5 +9,6 @@ services:
       - ./nginx.conf:/etc/nginx/tmp/nginx.conf
       - ./default.conf:/etc/nginx/tmp/conf.d/default.conf
       - ./rp.conf:/etc/nginx/tmp/conf.d/rp.conf
+      - ./_htpasswd:/etc/nginx/tmp/_htpasswd
     ports:
       - 80:80

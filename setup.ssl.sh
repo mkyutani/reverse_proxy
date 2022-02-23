@@ -24,7 +24,7 @@ do
             METHODS=`echo $l | cut -d, -f6`
             AUTH_MSG=`echo $l | cut -d, -f7`
 
-            cat < /dev/null > env/reverse_proxy/rp.location.cond.tmp
+            echo -n > env/reverse_proxy/rp.location.cond.tmp
             if [ -n "$METHODS" ]
             then
                 METHODS=${METHODS} \
@@ -55,7 +55,7 @@ do
             METHODS=`echo $l | cut -d, -f6`
             AUTH_MSG=`echo $l | cut -d, -f7`
 
-            cat < /dev/null > env/reverse_proxy/rp.location.cond.tmp
+            echo -n > env/reverse_proxy/rp.location.cond.tmp
             if [ -n "$METHODS" ]
             then
                 METHODS=${METHODS} \
@@ -66,13 +66,13 @@ do
                 AUTH_MSG=${AUTH_MSG} \
                         envsubst "\$AUTH_MSG" < ./rp-common.conf.location.auth.template >> env/reverse_proxy/rp.location.cond.tmp
             fi
-            cat ./rp.conf.ssl.template | sed '/-*-CONDITIONS-*-/e cat env/reverse_proxy/rp.location.cond.tmp' | sed '/-*-CONDITIONS-*-/d' >> env/reverse_proxy/rp.$s.conf.ssl.tmp
+            cat ./rp.conf.ssl.template | sed '/-*-CONDITIONS-*-/e cat env/reverse_proxy/rp.location.cond.tmp' | sed '/-*-CONDITIONS-*-/d' >> env/reverse_proxy/rp.$s.ssl.tmp
 
             SERVER=${SERVER} \
                   LOCATION=${LOCATION} \
                   CONTAINER=${CONTAINER} \
                   CONTAINER_PORT=${CONTAINER_PORT} \
-                  envsubst "\$SERVER \$LOCATION \$CONTAINER \$CONTAINER_PORT" < env/reverse_proxy/rp.$s.conf.ssl.tmp >> env/reverse_proxy/rp.$s.conf.tmp
+                  envsubst "\$SERVER \$LOCATION \$CONTAINER \$CONTAINER_PORT" < env/reverse_proxy/rp.$s.ssl.tmp >> env/reverse_proxy/rp.$s.conf.tmp
         done
     fi
 done
