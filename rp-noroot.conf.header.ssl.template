@@ -7,5 +7,5 @@ server {
 server {
     listen 443 ssl;
     server_name ${SERVER};
-    ssl_certificate /etc/letsencrypt/live/blackaplysia.com/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/blackaplysia.com/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${SSL_DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${SSL_DOMAIN}/privkey.pem;

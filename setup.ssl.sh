@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source ./.env
+
 # Generate overwritten configuration files
 cp -f nginx.conf.template env/reverse_proxy/nginx.conf
 cp -f default.conf.template env/reverse_proxy/default.conf
@@ -14,7 +16,7 @@ do
     if [ `egrep -c -v '^[^,]+,/,' env/reverse_proxy/servers.$s.csv.tmp` -ne 0 ]
     then
         echo -n > env/reverse_proxy/rp.$s.conf.tmp
-        SERVER=$s envsubst "\$SERVER" < ./rp-noroot.conf.header.ssl.template >> env/reverse_proxy/rp.$s.conf.tmp
+        SERVER=$s envsubst "\$SERVER \$SSL_DOMAIN" < ./rp-noroot.conf.header.ssl.template >> env/reverse_proxy/rp.$s.conf.tmp
         for l in `cat env/reverse_proxy/servers.$s.csv.tmp`
         do
             SERVER=`echo $l | cut -d, -f1`
@@ -72,7 +74,7 @@ do
                   LOCATION=${LOCATION} \
                   CONTAINER=${CONTAINER} \
                   CONTAINER_PORT=${CONTAINER_PORT} \
-                  envsubst "\$SERVER \$LOCATION \$CONTAINER \$CONTAINER_PORT" < env/reverse_proxy/rp.$s.ssl.tmp >> env/reverse_proxy/rp.$s.conf.tmp
+                  envsubst "\$SERVER \$LOCATION \$CONTAINER \$CONTAINER_PORT \$SSL_DOMAIN" < env/reverse_proxy/rp.$s.ssl.tmp >> env/reverse_proxy/rp.$s.conf.tmp
         done
     fi
 done
